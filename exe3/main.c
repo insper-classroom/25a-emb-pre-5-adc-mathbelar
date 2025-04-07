@@ -26,49 +26,38 @@ void data_task(void *p) {
 void process_task(void *p) {
     int data = 0;
     int buffer[5];    
-    int index = 0;
-    int avg =0;  
-    bool buffer_valor = false; 
-                    
+    int valor = 0;
+    int avg =0;                      
 
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
-            // implementar filtro aqui!
+                
+              buffer[valor] = data;
+                int sum = 0;
+                
+                for(int i = 0; i<5;i++){
 
+                    sum += buffer[i];
 
-            while (true) {
-                if (xQueueReceive(xQueueData, &data, 100)) {
-                        
-                      buffer[index] = data;
-                        int sum = 0;
-
-                        for(int i = 0; i<5; i++){
-                            sum +=buffer[i];
-
-
-                        }
-
-                        avg = sum/5;
-                        index++;
-                        
-                        if(index >=5){
-                            index = 0;
-
-                        }
-            
-                        printf("avg: %d\n", avg);    
-                        vTaskDelay(pdMS_TO_TICKS(50));
-
-                    
                 }
-            }
+
+                avg = sum/5;
+                valor++;
+                
+                if(valor >=5){
+                    valor = 0;
 
 
-            // deixar esse delay!
+                }
+    
+            printf("%d\n",avg);
             vTaskDelay(pdMS_TO_TICKS(50));
+        
         }
     }
 }
+
+
 
 int main() {
     stdio_init_all();
