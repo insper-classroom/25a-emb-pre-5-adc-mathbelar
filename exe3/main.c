@@ -29,7 +29,38 @@ void process_task(void *p) {
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
             // implementar filtro aqui!
+            
+            const int WINDOW_SIZE = 5;
+            int buffer[WINDOW_SIZE] = {0};
+            int index = 0;
+            int sum = 0;
+            int count = 0;
 
+            while (true) {
+                if (xQueueReceive(xQueueData, &data, 100)) {
+                    // Remove valor mais antigo da soma
+                    sum -= buffer[index];
+        
+                    // Adiciona novo valor no buffer e à soma
+                    buffer[index] = data;
+                    sum += data;
+        
+                    // Atualiza o índice circular
+                    index = (index + 1) % WINDOW_SIZE;
+        
+                    // Garante que só divide pela quantidade certa até ter 5 amostras
+                    if (count < WINDOW_SIZE) count++;
+        
+                    // Calcula média
+                    int media = sum / count;
+        
+                    // Imprime na UART
+                    printf("%d\n", media);
+        
+                    // Delay obrigatório
+                    vTaskDelay(pdMS_TO_TICKS(50));
+                }
+            }
 
 
 
