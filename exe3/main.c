@@ -25,10 +25,11 @@ void data_task(void *p) {
 
 void process_task(void *p) {
     int data = 0;
-
     int buffer[5];    
     int index = 0;
-    int avg =0;                      
+    int avg =0;  
+    bool buffer_valor = false; 
+                    
 
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
@@ -41,8 +42,10 @@ void process_task(void *p) {
                       buffer[index] = data;
                         int sum = 0;
 
-                        for(int i = 0; i<5;i++){
+                        for(int i = 0; i<5; i++){
                             sum +=buffer[i];
+
+
                         }
 
                         avg = sum/5;
@@ -50,10 +53,12 @@ void process_task(void *p) {
                         
                         if(index >=5){
                             index = 0;
-                            
+
                         }
             
-                        printf("avg: %d\n", avg);
+                        printf("avg: %d\n", avg);    
+                        vTaskDelay(pdMS_TO_TICKS(50));
+
                     
                 }
             }
